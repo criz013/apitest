@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\UnitVersionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
+
 #[ORM\Entity(repositoryClass: UnitVersionRepository::class)]
 #[ORM\UniqueConstraint(name: "uniq_unit_version", columns: ["unit_id", "game_version_id"])]
 class UnitVersion

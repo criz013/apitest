@@ -4,27 +4,35 @@ namespace App\Entity;
 
 use App\Repository\GameVersionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
+
 #[ORM\Entity(repositoryClass: GameVersionRepository::class)]
 class GameVersion
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
+    #[Groups(['game:version:read', 'game:read'])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Game::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
-    private Game $game;
-
     #[ORM\Column(length: 100)]
+    #[Groups(["game:version:read", 'game:read'])]
     private string $name;
 
     #[ORM\Column(type: "date", nullable: true)]
+    #[Groups(["game:version:read"])]
     private ?\DateTimeInterface $releaseDate = null;
 
     #[ORM\Column(type: "json", nullable: true)]
+    #[Groups(["game:version:read"])]
     private ?array $rules = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["game:version:read"])]
     private ?string $slug = null;
+
+    #[ORM\ManyToOne(targetEntity: Game::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[Groups(["game:version:read"])]
+    private Game $game;
 
     public function getId(): ?int
     {

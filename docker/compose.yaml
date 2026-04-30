@@ -36,4 +36,4 @@ volumes:
 ###< doctrine/doctrine-bundle ###
 networks:
   default:
-    name: nt_default
+    name: app_default

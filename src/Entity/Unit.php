@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\UnitRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
+
 #[ORM\Entity(repositoryClass: UnitRepository::class)]
 class Unit
 {

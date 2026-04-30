@@ -4,31 +4,40 @@ namespace App\Entity;
 
 use App\Repository\FactionVersionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
+
 #[ORM\Entity(repositoryClass: FactionVersionRepository::class)]
 #[ORM\UniqueConstraint(name: "uniq_faction_version", columns: ["faction_id", "game_version_id"])]
 class FactionVersion
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
+    #[Groups(["faction:version:read", "faction:read"])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Faction::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[Groups(["faction:version:read"])]
     private Faction $faction;
 
     #[ORM\ManyToOne(targetEntity: GameVersion::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[Groups(["faction:version:read"])]
     private GameVersion $gameVersion;
 
     #[ORM\Column(type: "json", nullable: true)]
+    #[Groups(["faction:version:read"])]
     private ?array $rules = null;
 
     #[ORM\Column(type: "json", nullable: true)]
+    #[Groups(["faction:version:read"])]
     private ?array $bonuses = null;
 
     #[ORM\Column(type: "json", nullable: true)]
+    #[Groups(["faction:version:read"])]
     private ?array $restrictions = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["faction:version:read"])]
     private ?string $slug = null;
 
     public function getId(): ?int

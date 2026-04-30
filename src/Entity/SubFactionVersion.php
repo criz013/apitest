@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\SubFactionVersionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
+
 #[ORM\Entity(repositoryClass: SubFactionVersionRepository::class)]
 #[ORM\UniqueConstraint(name: "uniq_subfaction_version", columns: ["sub_faction_id", "game_version_id"])]
 class SubFactionVersion

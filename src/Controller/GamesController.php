@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Games;
-use App\Repository\GamesRepository;
+use App\Entity\Game;
+use App\Repository\GameRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Hateoas\UrlGenerator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,24 +12,26 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface as UrlGeneratorInterfaceAlias;
-use Symfony\Component\Serializer\SerializerInterface;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 
-#[Route('/api/games')]
+
+#[Route('/api/game')]
 final class GamesController extends AbstractController
 {
     #[Route('/', name: 'app_games', methods: ['GET'])]
-    public function indexGames(GamesRepository $gamesRepository, SerializerInterface $serializer): JsonResponse
+    public function indexGames(GameRepository $gameRepository, SerializerInterface $serializer): JsonResponse
     {
-        $game = $gamesRepository->findAll();
-        $games = $serializer->serialize($game, 'json', ['groups' => 'game:read']);
+        $game = $gameRepository->findAll();
+        $game = $serializer->serialize($game, 'json', SerializationContext::create()->setGroups(['game:read']));
 
-        return new JsonResponse($games,Response::HTTP_OK,['accept' => 'json'],true);
+        return new JsonResponse($game,Response::HTTP_OK,['accept' => 'json'],true);
     }
 
     #[Route('/{id}', name: 'app_show_games', methods: ['GET'])]
-    public function showGames(Games $game, SerializerInterface $serializer): JsonResponse
+    public function showGames(Game $game, SerializerInterface $serializer): JsonResponse
     {
-        $game = $serializer->serialize($game, 'json', ['groups' => 'game:read']);
+        $game = $serializer->serialize($game, 'json',['groups' => 'game:read']);
 
         return new JsonResponse($game,Response::HTTP_OK,['accept' => 'json'],true);
     }
@@ -41,7 +43,7 @@ final class GamesController extends AbstractController
                              UrlGeneratorInterface $urlGenerator
     ): JsonResponse
     {
-        $game = $serializer->deserialize($request->getContent(), Games::class, 'json');
+        $game = $serializer->deserialize($request->getContent(), Game::class, 'json');
         $entityManager->persist($game);
         $entityManager->flush();
 
@@ -54,9 +56,9 @@ final class GamesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_delete_games', methods: ['DELETE'])]
-    public function deleteGames(Games $games, EntityManagerInterface $entityManager): JsonResponse
+    public function deleteGames(Game $game, EntityManagerInterface $entityManager): JsonResponse
     {
-        $entityManager->remove($games);
+        $entityManager->remove($game);
         $entityManager->flush();
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);

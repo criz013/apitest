@@ -4,19 +4,25 @@ namespace App\Entity;
 
 use App\Repository\PublisherRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
+
 #[ORM\Entity(repositoryClass: PublisherRepository::class)]
 class Publisher
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
+    #[Groups(["game:read","publisher:read"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["game:read","publisher:read"])]
     private string $name;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(["publisher:read"])]
     private ?string $website = null;
 
     #[ORM\Column(type: "text", nullable: true)]
+    #[Groups(["publisher:read"])]
     private ?string $description = null;
 
     #[ORM\Column]

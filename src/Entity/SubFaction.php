@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\SubFactionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
+
 #[ORM\Entity(repositoryClass: SubFactionRepository::class)]
 class SubFaction
 {
