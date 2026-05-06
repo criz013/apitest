@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\FactionRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: FactionRepository::class)]
 class Faction
@@ -12,11 +14,6 @@ class Faction
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     #[Groups(["faction:read", "faction:version:read"])]
     private ?int $id = null;
-
-    #[ORM\ManyToOne(targetEntity: Game::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
-    #[Groups(["faction:read"])]
-    private Game $game;
 
     #[ORM\Column(length: 255)]
     #[Groups(["faction:read", "faction:version:read"])]
@@ -29,6 +26,19 @@ class Faction
     #[ORM\Column(length: 255)]
     #[Groups(["faction:read"])]
     private ?string $slug = null;
+
+    #[ORM\ManyToOne(targetEntity: Game::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[Groups(["faction:read"])]
+    private Game $game;
+
+    #[ORM\OneToMany(targetEntity: FactionKeyword::class, mappedBy: "faction", orphanRemoval: true)]
+    private Collection $factionKeywords;
+
+    public function __construct()
+    {
+        $this->factionKeywords = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {

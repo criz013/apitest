@@ -40,10 +40,14 @@ class Game
     #[Groups(["game:read"])]
     private Collection $gameVersions;
 
+    #[ORM\OneToMany(targetEntity: Keyword::class, mappedBy: "game", orphanRemoval: true)]
+    private Collection $keywords;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->gameVersions = new ArrayCollection();
+        $this->keywords = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -116,6 +120,27 @@ class Game
     public function setGameVersions(Collection $gameVersions): void
     {
         $this->gameVersions = $gameVersions;
+    }
+
+    public function addKeyword(Keyword $keyword): self
+    {
+        if (!$this->keywords->contains($keyword)) {
+            $this->keywords[] = $keyword;
+            $keyword->setGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeKeyword(Keyword $keyword): self
+    {
+        if ($this->keywords->removeElement($keyword)) {
+            if ($keyword->getGame() === $this) {
+                $keyword->setGame(null);
+            }
+        }
+
+        return $this;
     }
 
 }

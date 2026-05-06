@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\UnitRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: UnitRepository::class)]
 class Unit
@@ -12,15 +14,23 @@ class Unit
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Faction::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
-    private Faction $faction;
-
     #[ORM\Column(length: 255)]
     private string $name;
 
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
+
+    #[ORM\ManyToOne(targetEntity: Faction::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    private Faction $faction;
+
+    #[ORM\OneToMany(targetEntity: UnitKeyword::class, mappedBy: "unit", orphanRemoval: true)]
+    private Collection $unitKeywords;
+
+    public function __construct()
+    {
+        $this->unitKeywords = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
